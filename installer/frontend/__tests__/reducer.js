@@ -1,0 +1,20 @@
+/* eslint-env jest */
+jest.unmock('../reducer');
+
+import { reducer, savable } from '../reducer';
+import { restoreActionTypes } from '../actions';
+
+const initialState = reducer(undefined, {type: 'Some Initial Action'});
+
+describe('reducer', () => {
+  it('saves and restores the initial state faithfully', () => {
+    const saved = savable(initialState);
+    const restoredState = reducer(initialState, {
+      type: restoreActionTypes.RESTORE_STATE,
+      payload: saved,
+    });
+    const initialJSON = JSON.stringify(initialState);
+    const restoredJSON = JSON.stringify(restoredState);
+    expect(initialJSON).toEqual(restoredJSON);
+  });
+});
