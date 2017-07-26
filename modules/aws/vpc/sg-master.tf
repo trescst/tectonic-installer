@@ -79,6 +79,8 @@ resource "aws_security_group_rule" "master_ingress_heapster_from_worker" {
 }
 
 resource "aws_security_group_rule" "master_ingress_flannel" {
+  count = "${ var.tectonic_container_overlay_network == "flannel" ? 1 : 0 }"
+
   type              = "ingress"
   security_group_id = "${aws_security_group.master.id}"
 
@@ -89,6 +91,8 @@ resource "aws_security_group_rule" "master_ingress_flannel" {
 }
 
 resource "aws_security_group_rule" "master_ingress_flannel_from_worker" {
+  count = "${ var.tectonic_container_overlay_network == "flannel" ? 1 : 0 }"
+
   type                     = "ingress"
   security_group_id        = "${aws_security_group.master.id}"
   source_security_group_id = "${aws_security_group.worker.id}"
@@ -96,6 +100,54 @@ resource "aws_security_group_rule" "master_ingress_flannel_from_worker" {
   protocol  = "udp"
   from_port = 4789
   to_port   = 4789
+}
+
+resource "aws_security_group_rule" "master_ingress_weave_udp" {
+  count = "${ var.tectonic_container_overlay_network == "weave" ? 1 : 0 }"
+
+  type              = "ingress"
+  security_group_id = "${aws_security_group.master.id}"
+
+  protocol  = "udp"
+  from_port = 6783
+  to_port   = 6784
+  self      = true
+}
+
+resource "aws_security_group_rule" "master_ingress_weave_tcp" {
+  count = "${ var.tectonic_container_overlay_network == "weave" ? 1 : 0 }"
+
+  type              = "ingress"
+  security_group_id = "${aws_security_group.master.id}"
+
+  protocol  = "tcp"
+  from_port = 6783
+  to_port   = 6784
+  self      = true
+}
+
+resource "aws_security_group_rule" "master_ingress_weave_from_worker_udp" {
+  count = "${ var.tectonic_container_overlay_network == "weave" ? 1 : 0 }"
+
+  type                     = "ingress"
+  security_group_id        = "${aws_security_group.master.id}"
+  source_security_group_id = "${aws_security_group.worker.id}"
+
+  protocol  = "udp"
+  from_port = 6783
+  to_port   = 6784
+}
+
+resource "aws_security_group_rule" "master_ingress_weave_from_worker_tcp" {
+  count = "${ var.tectonic_container_overlay_network == "weave" ? 1 : 0 }"
+
+  type                     = "ingress"
+  security_group_id        = "${aws_security_group.master.id}"
+  source_security_group_id = "${aws_security_group.worker.id}"
+
+  protocol  = "tcp"
+  from_port = 6783
+  to_port   = 6784
 }
 
 resource "aws_security_group_rule" "master_ingress_node_exporter" {

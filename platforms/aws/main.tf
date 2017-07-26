@@ -17,6 +17,8 @@ module "vpc" {
   extra_tags              = "${var.tectonic_aws_extra_tags}"
   enable_etcd_sg          = "${!var.tectonic_experimental && length(compact(var.tectonic_etcd_servers)) == 0 ? 1 : 0}"
 
+  tectonic_container_overlay_network = "${var.tectonic_container_overlay_network}"
+
   # VPC layout settings.
   #
   # The following parameters control the layout of the VPC accross availability zones.
@@ -94,6 +96,7 @@ module "ignition-masters" {
   tectonic_service          = "${module.tectonic.systemd_service}"
   tectonic_service_disabled = "${var.tectonic_vanilla_k8s}"
   cluster_name              = "${var.tectonic_cluster_name}"
+  tectonic_container_overlay_network = "${var.tectonic_container_overlay_network}"
 }
 
 module "masters" {
@@ -140,6 +143,7 @@ module "ignition-workers" {
   bootkube_service       = ""
   tectonic_service       = ""
   cluster_name           = ""
+  tectonic_container_overlay_network = "${var.tectonic_container_overlay_network}"
 }
 
 module "workers" {

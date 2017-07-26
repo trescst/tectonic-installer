@@ -56,3 +56,8 @@ variable "master_azs" {
 variable "worker_azs" {
   type = "list"
 }
+
+variable "tectonic_container_overlay_network" {
+  description = "The container overlay network that will be used"
+  type        = "string"
+}

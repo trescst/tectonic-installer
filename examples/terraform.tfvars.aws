@@ -239,3 +239,6 @@ tectonic_vanilla_k8s = false
 // The number of worker nodes to be created.
 // This applies only to cloud platforms.
 tectonic_worker_count = "3"
+
+// The container overlay network that will be used: flannel (default) or weave, uncomment the next line to use weave.
+//tectonic_container_overlay_network = "weave"

@@ -100,11 +100,33 @@ module "tectonic" {
   stats_url         = "${var.tectonic_stats_url}"
 }
 
+module "flannel-vxlan" {
+  source = "../../modules/net/flannel-vxlan"
+
+  flannel_image     = "${var.tectonic_container_images["flannel"]}"
+  flannel_cni_image = "${var.tectonic_container_images["flannel_cni"]}"
+  cluster_cidr      = "${var.tectonic_cluster_cidr}"
+  tectonic_container_overlay_network = "${var.tectonic_container_overlay_network}"
+
+  bootkube_id = "${module.bootkube.id}"
+}
+
+module "weave" {
+  source = "../../modules/net/weave"
+
+  weave_image     = "${var.tectonic_container_images["weave"]}"
+  weave_npc_image = "${var.tectonic_container_images["weave_npc"]}"
+  cluster_cidr      = "${var.tectonic_cluster_cidr}"
+  tectonic_container_overlay_network = "${var.tectonic_container_overlay_network}"
+
+  bootkube_id = "${module.bootkube.id}"
+}
+
 data "archive_file" "assets" {
   type       = "zip"
   source_dir = "./generated/"
 
-  # Because the archive_file provider is a data source, depends_on can't be
+  # Because the archive_filnnel-vxlan.id}e provider is a data source, depends_on can't be
   # used to guarantee that the tectonic/bootkube modules have generated
   # all the assets on disk before trying to archive them. Instead, we use their
   # ID outputs, that are only computed once the assets have actually been
@@ -114,5 +136,5 @@ data "archive_file" "assets" {
   # Additionally, data sources do not support managing any lifecycle whatsoever,
   # and therefore, the archive is never deleted. To avoid cluttering the module
   # folder, we write it in the TerraForm managed hidden folder `.terraform`.
-  output_path = "./.terraform/generated_${sha1("${module.tectonic.id} ${module.bootkube.id}")}.zip"
+  output_path = "./.terraform/generated_${sha1("${module.tectonic.id} ${module.bootkube.id} ${module.flannel-vxlan.id} ${module.weave.id}")}.zip"
 }

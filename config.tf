@@ -45,6 +45,8 @@ variable "tectonic_container_images" {
     kubedns_sidecar                 = "gcr.io/google_containers/k8s-dns-sidecar-amd64:1.14.4"
     flannel                         = "quay.io/coreos/flannel:v0.7.1-amd64"
     flannel_cni                     = "quay.io/coreos/flannel-cni:0.1.0"
+    weave                           = "docker.io/weaveworks/weave-kube:2.0.1"
+    weave_npc                       = "docker.io/weaveworks/weave-npc:2.0.1"
     etcd                            = "quay.io/coreos/etcd:v3.1.8"
     etcd_operator                   = "quay.io/coreos/etcd-operator:v0.4.0"
     kenc                            = "quay.io/coreos/kenc:8f6e2e885f790030fbbb0496ea2a2d8830e58b8f"
@@ -321,4 +323,13 @@ variable "tectonic_stats_url" {
   type        = "string"
   default     = "https://stats-collector.tectonic.com"
   description = "The Tectonic statistics collection URL to which to report."
+}
+
+variable "tectonic_container_overlay_network" {
+  type    = "string"
+  default = "flannel" 
+
+  description = <<EOF
+Chioose your container overlay network: options are flannel (default) and weave.
+EOF
 }

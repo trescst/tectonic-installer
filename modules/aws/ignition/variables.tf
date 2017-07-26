@@ -46,3 +46,8 @@ variable "tectonic_service_disabled" {
 variable "cluster_name" {
   type = "string"
 }
+
+variable "tectonic_container_overlay_network" {
+  description = "The container overlay network that will be used"
+  type        = "string"
+}
